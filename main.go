@@ -2,23 +2,25 @@ package main
 
 import (
 	"fmt"
-	"github.com/SarthakStha/blog-aggregator/internal/config"
 	"log"
+	"os"
 )
 
 func main() {
-	userConfig, err := config.Read()
+	currState, err := initializeState()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Unable to initialize the state: %s", err)
 	}
 
-	if err := (&userConfig).SetUser("test user"); err != nil {
-		log.Fatal(err)
+	registry := initializeRegistry()
+	registry.register("login", handlerLogin)
+
+	if len(os.Args) < 3 {
+		log.Fatal("Insufficient number of argument")
+	}
+	if err := registry.run(currState, command{os.Args[1], os.Args[2:]}); err != nil {
+		log.Fatalf("Error while handling the command: %s", err)
 	}
 
-	userConfig, err = config.Read()
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(userConfig.DbURL, userConfig.CurrentUserName)
+	fmt.Println(currState.currConfig.DbURL, currState.currConfig.CurrentUserName)
 }
