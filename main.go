@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	_ "github.com/lib/pq"
 	"log"
 	"os"
 )
@@ -13,7 +14,6 @@ func main() {
 	}
 
 	registry := initializeRegistry()
-	registry.register("login", handlerLogin)
 
 	if len(os.Args) < 3 {
 		log.Fatal("Insufficient number of argument")
@@ -22,5 +22,5 @@ func main() {
 		log.Fatalf("Error while handling the command: %s", err)
 	}
 
-	fmt.Println(currState.currConfig.DbURL, currState.currConfig.CurrentUserName)
+	fmt.Println(currState.cfg.DbURL, currState.cfg.CurrentUserName)
 }

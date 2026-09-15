@@ -26,7 +26,11 @@ func (c *commands) register(name string, f func(*state, command) error) {
 }
 
 func initializeRegistry() *commands {
-	return &commands{
+	registry := &commands{
 		make(map[string]func(*state, command) error),
 	}
+	registry.register("login", handlerLogin)
+	registry.register("register", handlerRegister)
+
+	return registry
 }
