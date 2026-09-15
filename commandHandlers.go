@@ -17,7 +17,7 @@ func handlerLogin(s *state, cmd command) error {
 
 	ctx := context.Background()
 	if _, err := s.db.GetUser(ctx, cmd.args[0]); err != nil {
-		return fmt.Errorf("Error while trying to fetch user '%s': %s", cmd.args[0], err)
+		return fmt.Errorf("Error: unable to fetch user '%s': %w", cmd.args[0], err)
 	}
 
 	if err := s.cfg.SetUser(cmd.args[0]); err != nil {
@@ -34,7 +34,10 @@ func handlerRegister(s *state, cmd command) error {
 
 	ctx := context.Background()
 	if _, err := s.db.GetUser(ctx, cmd.args[0]); !errors.Is(err, sql.ErrNoRows) {
-		return fmt.Errorf("Error: user '%s' already exists", cmd.args[0])
+		if err == nil {
+			return fmt.Errorf("Error: user '%s' already exists", cmd.args[0])
+		}
+		return fmt.Errorf("Error: unable to confirm if the user already exits: %w", err)
 	}
 
 	user := database.CreateUserParams{
@@ -50,4 +53,30 @@ func handlerRegister(s *state, cmd command) error {
 
 	fmt.Printf("User '%s' has been created.\n", cmd.args[0])
 	return handlerLogin(s, cmd)
+}
+
+func handlerReset(s *state, cmd command) error {
+	ctx := context.Background()
+	if err := s.db.TruncateUsers(ctx); err != nil {
+		return fmt.Errorf("Error: unable to truncate the users table: %w", cmd.args[0])
+	}
+
+	return nil
+}
+
+func handlerUsers(s *state, cmd command) error {
+	ctx := context.Background()
+	users, err := s.db.GetUsers(ctx)
+	if err != nil {
+		return fmt.Errorf("Error: unable to get all users: %w", err)
+	}
+
+	for _, user := range users {
+		if user.Name == s.cfg.CurrentUserName {
+			fmt.Println("*", user.Name, "(current)")
+			continue
+		}
+		fmt.Println("*", user.Name)
+	}
+	return nil
 }
