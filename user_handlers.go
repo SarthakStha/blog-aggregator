@@ -23,6 +23,7 @@ func handlerLogin(s *state, cmd command) error {
 	if err := s.cfg.SetUser(cmd.args[0]); err != nil {
 		return err
 	}
+
 	fmt.Printf("Logged in as user '%s'\n", cmd.args[0])
 	return nil
 }
@@ -40,15 +41,15 @@ func handlerRegister(s *state, cmd command) error {
 		return fmt.Errorf("Error: unable to confirm if the user already exits: %w", err)
 	}
 
-	user := database.CreateUserParams{
+	userArg := database.CreateUserParams{
 		ID:        uuid.New(),
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 		Name:      cmd.args[0],
 	}
 
-	if _, err := s.db.CreateUser(ctx, user); err != nil {
-		return err
+	if _, err := s.db.CreateUser(ctx, userArg); err != nil {
+		return fmt.Errorf("Error: unable to create user: %w", err)
 	}
 
 	fmt.Printf("User '%s' has been created.\n", cmd.args[0])
@@ -58,13 +59,13 @@ func handlerRegister(s *state, cmd command) error {
 func handlerReset(s *state, cmd command) error {
 	ctx := context.Background()
 	if err := s.db.TruncateUsers(ctx); err != nil {
-		return fmt.Errorf("Error: unable to truncate the users table: %w", cmd.args[0])
+		return fmt.Errorf("Error: unable to truncate the users table: %w", err)
 	}
 
 	return nil
 }
 
-func handlerUsers(s *state, cmd command) error {
+func handlerListUsers(s *state, cmd command) error {
 	ctx := context.Background()
 	users, err := s.db.GetUsers(ctx)
 	if err != nil {

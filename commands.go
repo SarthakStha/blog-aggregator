@@ -13,11 +13,6 @@ type commands struct {
 	registry map[string]func(*state, command) error
 }
 
-var no_arg_commands map[string]struct{} = map[string]struct{}{
-	"reset": struct{}{},
-	"users": struct{}{},
-}
-
 func (c *commands) run(s *state, cmd command) error {
 	cmdHandler, ok := c.registry[cmd.name]
 	if !ok {
@@ -37,7 +32,12 @@ func initializeRegistry() *commands {
 	registry.register("login", handlerLogin)
 	registry.register("register", handlerRegister)
 	registry.register("reset", handlerReset)
-	registry.register("users", handlerUsers)
+	registry.register("users", handlerListUsers)
+	registry.register("agg", handlerAggregation)
+	registry.register("addfeed", middlewareLoggedIn(handlerAddFeed))
+	registry.register("feeds", handlerListAllFeeds)
+	registry.register("follow", middlewareLoggedIn(handlerFollow))
+	registry.register("following", middlewareLoggedIn(handlerFollowing))
 
 	return registry
 }

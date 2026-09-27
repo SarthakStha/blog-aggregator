@@ -34,18 +34,18 @@ func Read() (Config, error) {
 	configData := Config{}
 	configFilePath, err := getConfigFilePath()
 	if err != nil {
-		return configData, fmt.Errorf("Error: Unable to get home dir path, %w", err)
+		return configData, fmt.Errorf("Error: unable to get home dir path, %w", err)
 	}
 
 	// Better to use Open() to prevent loading
 	// very large volume of file data in memory.
 	jsonData, err := os.ReadFile(configFilePath)
 	if err != nil {
-		return configData, fmt.Errorf("Error: Unable to read the file, %w", err)
+		return configData, fmt.Errorf("Error: unable to read the file, %w", err)
 	}
 
 	if err := json.Unmarshal(jsonData, &configData); err != nil {
-		return configData, fmt.Errorf("Error: Unable to parse the data, %w", err)
+		return configData, fmt.Errorf("Error: unable to parse the data, %w", err)
 	}
 
 	return configData, nil
@@ -54,16 +54,16 @@ func Read() (Config, error) {
 func write(userConfig Config) error {
 	data, err := json.Marshal(userConfig)
 	if err != nil {
-		return fmt.Errorf("Error: Unable to marshal the data, %w", data)
+		return fmt.Errorf("Error: unable to marshal the data, %w", data)
 	}
 
 	configFilePath, err := getConfigFilePath()
 	if err != nil {
-		return fmt.Errorf("Error: Unable to get home dir path, %w", err)
+		return fmt.Errorf("Error: unable to get home dir path, %w", err)
 	}
 
 	if err := os.WriteFile(configFilePath, data, 0666); err != nil {
-		return fmt.Errorf("Error: Unable to write to file, %w", err)
+		return fmt.Errorf("Error: unable to write to file, %w", err)
 	}
 
 	return nil
