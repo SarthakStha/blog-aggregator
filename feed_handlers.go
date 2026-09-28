@@ -39,7 +39,7 @@ func handlerAddFeed(s *state, cmd command, user database.User) error {
 		return fmt.Errorf("Error: unable to create feed: %w", err)
 	}
 
-	feedFollowsArg := database.CreateFeedFollowsParams{
+	feedFollowsArg := database.CreateFeedFollowParams{
 		ID:        uuid.New(),
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
@@ -47,7 +47,7 @@ func handlerAddFeed(s *state, cmd command, user database.User) error {
 		FeedID:    feed.ID,
 	}
 
-	feedFollowRow, err := s.db.CreateFeedFollows(ctx, feedFollowsArg)
+	feedFollowRow, err := s.db.CreateFeedFollow(ctx, feedFollowsArg)
 	if err != nil {
 		return fmt.Errorf("Error: unable to insert into feed_follow: %w", err)
 	}
