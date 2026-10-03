@@ -45,7 +45,8 @@ func (item *RSSItem) normalizeText() {
 }
 
 func (item *RSSItem) String() string {
-	return fmt.Sprintf("Title: %s, Link: %s\nDescription: %s\n", item.Title, item.Link, item.Description)
+	return fmt.Sprintf("Title: %s, \nLink: %s\nDescription: %s\nPublished Date: %s\n",
+		item.Title, item.Link, item.Description, item.PubDate)
 }
 
 func FetchFeed(ctx context.Context, feedURL string) (*RSSFeed, error) {

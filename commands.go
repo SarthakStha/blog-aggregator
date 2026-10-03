@@ -39,6 +39,7 @@ func initializeRegistry() *commands {
 	registry.register("follow", middlewareLoggedIn(handlerFollow))
 	registry.register("unfollow", middlewareLoggedIn(handlerUnfollow))
 	registry.register("following", middlewareLoggedIn(handlerFollowing))
+	registry.register("browse", middlewareLoggedIn(handlerBrowse))
 
 	return registry
 }

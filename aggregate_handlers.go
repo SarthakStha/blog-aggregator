@@ -44,11 +44,14 @@ func scrapeFeeds(s *state) error {
 		return fmt.Errorf("Error: Unable to update the feed: %w", err)
 	}
 
-	contentFeed, err := feed.FetchFeed(ctx, dbFeed.Url)
+	contentFeeds, err := feed.FetchFeed(ctx, dbFeed.Url)
 	if err != nil {
 		return err
 	}
 
-	fmt.Println(contentFeed)
+	fmt.Println("Posting feed from::", dbFeed.Name)
+	for _, contentFeed := range contentFeeds.Channel.Item {
+		createPosts(s, dbFeed, contentFeed)
+	}
 	return nil
 }
