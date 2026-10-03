@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/SarthakStha/blog-aggregator/internal/database"
 	"github.com/google/uuid"
-	"database/sql"
+	//"database/sql"
 	"time"
 )
 
@@ -32,10 +32,11 @@ func handlerAddFeed(s *state, cmd command, user database.User) error {
 		Name:      cmd.args[0],
 		Url:       cmd.args[1],
 		UserID:    user.ID,
-		LastFetchedAt: sql.NullTime{
-			Time:  time.Now().UTC(),
-			Valid: true,
-		},
+		// Testing if NULLS FIRST is working
+		//LastFetchedAt: sql.NullTime{
+		//	Time:  time.Now().UTC(),
+		//	Valid: true,
+		//},
 	}
 
 	ctx := context.Background()

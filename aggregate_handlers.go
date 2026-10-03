@@ -3,9 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/SarthakStha/blog-aggregator/internal/database"
 	"github.com/SarthakStha/blog-aggregator/internal/feed"
-	"database/sql"
 	"time"
 )
 
@@ -41,14 +39,7 @@ func scrapeFeeds(s *state) error {
 		return fmt.Errorf("Error: Unable to get the next feed: %w", err)
 	}
 
-	feedArg := database.MarkFeedFetchedParams{
-		LastFetchedAt: sql.NullTime{
-			Time:  time.Now().UTC(),
-			Valid: true,
-		},
-		ID: dbFeed.ID,
-	}
-	dbFeed, err = s.db.MarkFeedFetched(ctx, feedArg)
+	dbFeed, err = s.db.MarkFeedFetched(ctx, dbFeed.ID)
 	if err != nil {
 		return fmt.Errorf("Error: Unable to update the feed: %w", err)
 	}
