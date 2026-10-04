@@ -18,7 +18,7 @@ func displayPost(post database.Post) {
 	fmt.Printf("Created At: %s\n", post.CreatedAt)
 	fmt.Printf("Updated At: %s\n", post.UpdatedAt)
 	fmt.Printf("Published At: %s\n", post.PublishedAt.Time)
-	fmt.Printf("Description: %s....\n", post.Description.String[:200])
+	fmt.Printf("Description: %s\n", post.Description.String)
 	fmt.Println("==================================================================================")
 }
 
@@ -47,8 +47,8 @@ func createPosts(s *state, dbFeed database.Feed, item feed.RSSItem) {
 	}
 
 	_, err := s.db.CreatePost(ctx, postArg)
-	if err != nil && !strings.Contains(err.Error(), "posts_url_key") {
-		fmt.Printf("Error: Unable to create a post: %s\n", err)
+	if err != nil && !strings.Contains(err.Error(), "one_post_per_url") {
+		fmt.Printf("Error: unable to create a post: %s\n", err)
 	}
 }
 
@@ -56,7 +56,7 @@ func handlerBrowse(s *state, cmd command, user database.User) error {
 	var displayLimit int32 = 2
 	if len(cmd.args) == 1 {
 		if specifiedLimit, err := strconv.ParseInt(cmd.args[0], 10, 32); err != nil {
-			return fmt.Errorf("Error: Command expects argument of type int: %w", err)
+			return fmt.Errorf("Error: command expects argument of type int: %w", err)
 		} else {
 			displayLimit = int32(specifiedLimit)
 		}

@@ -14,7 +14,7 @@ func handlerAggregation(s *state, cmd command) error {
 
 	interval, err := time.ParseDuration(cmd.args[0])
 	if err != nil {
-		return fmt.Errorf("Error: Unable to parse duration string: %w", err)
+		return fmt.Errorf("Error: unable to parse duration string: %w", err)
 	}
 	fmt.Println("Collecting feeds every", interval)
 
@@ -36,12 +36,12 @@ func scrapeFeeds(s *state) error {
 	ctx := context.Background()
 	dbFeed, err := s.db.GetNextFeedToFetch(ctx)
 	if err != nil {
-		return fmt.Errorf("Error: Unable to get the next feed: %w", err)
+		return fmt.Errorf("Error: unable to get the next feed: %w", err)
 	}
 
 	dbFeed, err = s.db.MarkFeedFetched(ctx, dbFeed.ID)
 	if err != nil {
-		return fmt.Errorf("Error: Unable to update the feed: %w", err)
+		return fmt.Errorf("Error: unable to update the feed: %w", err)
 	}
 
 	contentFeeds, err := feed.FetchFeed(ctx, dbFeed.Url)

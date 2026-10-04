@@ -10,6 +10,8 @@ SELECT posts.*
 FROM posts
 LEFT JOIN feeds
 ON posts.feed_id = feeds.id
-WHERE feeds.user_id = $1
+LEFT JOIN feed_follows
+ON feeds.id = feed_follows.feed_id
+WHERE feed_follows.user_id = $1
 ORDER BY published_at
 LIMIT $2;
