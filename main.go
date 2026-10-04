@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	_ "github.com/lib/pq"
 	"log"
 	"os"
@@ -22,6 +21,4 @@ func main() {
 	if err := registry.run(currState, command{os.Args[1], os.Args[2:]}); err != nil {
 		log.Fatalf("Error while handling the command: %s", err)
 	}
-
-	fmt.Println(currState.cfg.DbURL, currState.cfg.CurrentUserName)
 }

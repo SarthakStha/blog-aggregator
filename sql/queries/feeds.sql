@@ -11,6 +11,11 @@ VALUES (
 )
 RETURNING *;
 
+-- name: RemoveFeed :one
+DELETE FROM feeds
+WHERE url = $1
+RETURNING *;
+
 -- name: ListAllFeeds :many
 SELECT feeds.*, users.name AS user_name
 FROM feeds

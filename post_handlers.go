@@ -12,16 +12,23 @@ import (
 	"time"
 )
 
-func createPosts(s *state, dbFeed database.Feed, item feed.RSSItem) {
-	parsedTime, err := time.Parse(time.RFC1123Z, item.PubDate)
-	parsedTimeArg := sql.NullTime{
-		Time:  parsedTime,
-		Valid: true,
-	}
+func displayPost(post database.Post) {
+	fmt.Printf("Title: %s\n", post.Title)
+	fmt.Printf("URL: %s\n", post.Url)
+	fmt.Printf("Created At: %s\n", post.CreatedAt)
+	fmt.Printf("Updated At: %s\n", post.UpdatedAt)
+	fmt.Printf("Published At: %s\n", post.PublishedAt.Time)
+	fmt.Printf("Description: %s....\n", post.Description.String[:200])
+	fmt.Println("==================================================================================")
+}
 
-	if err != nil {
+func createPosts(s *state, dbFeed database.Feed, item feed.RSSItem) {
+	parsedTimeArg := sql.NullTime{}
+	if parsedTime, err := time.Parse(time.RFC1123Z, item.PubDate); err != nil {
 		fmt.Printf("Unable to parse string in format RFC1123Z, storing as NULL: %s\n", err)
-		parsedTimeArg.Valid = false
+	} else {
+		parsedTimeArg.Time = parsedTime
+		parsedTimeArg.Valid = true
 	}
 
 	ctx := context.Background()
@@ -39,32 +46,20 @@ func createPosts(s *state, dbFeed database.Feed, item feed.RSSItem) {
 		FeedID:      dbFeed.ID,
 	}
 
-	if _, err := s.db.CreatePost(ctx, postArg); err != nil {
-		if strings.Contains(err.Error(), "posts_url_key") {
-			return
-		}
+	_, err := s.db.CreatePost(ctx, postArg)
+	if err != nil && !strings.Contains(err.Error(), "posts_url_key") {
 		fmt.Printf("Error: Unable to create a post: %s\n", err)
 	}
 }
 
-func displayPosts(post database.Post) {
-	fmt.Printf("Title: %s\n", post.Title)
-	fmt.Printf("URL: %s\n", post.Url)
-	fmt.Printf("Created At: %s\n", post.CreatedAt)
-	fmt.Printf("Updated At: %s\n", post.UpdatedAt)
-	fmt.Printf("Published At: %s\n", post.PublishedAt.Time)
-	fmt.Printf("Description: %s....\n", post.Description.String[:200])
-	fmt.Println("==================================================================================")
-}
-
 func handlerBrowse(s *state, cmd command, user database.User) error {
 	var displayLimit int32 = 2
-	if len(cmd.args) != 0 {
-		i, err := strconv.ParseInt(cmd.args[0], 10, 32)
-		if err != nil {
+	if len(cmd.args) == 1 {
+		if specifiedLimit, err := strconv.ParseInt(cmd.args[0], 10, 32); err != nil {
 			return fmt.Errorf("Error: Command expects argument of type int: %w", err)
+		} else {
+			displayLimit = int32(specifiedLimit)
 		}
-		displayLimit = int32(i)
 	}
 
 	ctx := context.Background()
@@ -78,8 +73,10 @@ func handlerBrowse(s *state, cmd command, user database.User) error {
 		fmt.Printf("Error: Unable to get posts from the user: %w", err)
 	}
 
+	fmt.Printf("Found %d posts for user: %s\n", len(userPosts), user.Name)
+	fmt.Println("==================================================================================")
 	for _, post := range userPosts {
-		displayPosts(post)
+		displayPost(post)
 	}
 	return nil
 }

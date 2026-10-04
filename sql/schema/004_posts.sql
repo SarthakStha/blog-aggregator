@@ -8,9 +8,10 @@ CREATE TABLE posts (
 	description TEXT,
 	published_at TIMESTAMP,
 	feed_id UUID NOT NULL,
-	UNIQUE(url),
+	CONSTRAINT one_post_per_url UNIQUE(url),
 	CONSTRAINT posts_feed_id_fk FOREIGN KEY (feed_id)
 	REFERENCES feeds(id)
+	ON DELETE CASCADE
 );
 
 -- +goose Down

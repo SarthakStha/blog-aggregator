@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func printFeed(feed database.ListAllFeedsRow) {
+func displayFeed(feed database.ListAllFeedsRow) {
 	fmt.Println(" - ID: ", feed.ID)
 	fmt.Println(" - Created At: ", feed.CreatedAt)
 	fmt.Println(" - Updated At: ", feed.UpdatedAt)
@@ -62,6 +62,21 @@ func handlerAddFeed(s *state, cmd command, user database.User) error {
 	return nil
 }
 
+func handlerRemoveFeed(s *state, cmd command, user database.User) error {
+	if len(cmd.args) != 1 {
+		return fmt.Errorf("Error: 1 argument required, received %d", len(cmd.args))
+	}
+
+	ctx := context.Background()
+	feed, err := s.db.RemoveFeed(ctx, cmd.args[0])
+	if err != nil {
+		return fmt.Errorf("Error: unable to remove the feed: %w", err)
+	}
+
+	fmt.Printf("Feed: %s, URL: %s has been deleted successfully\n", feed.Name, feed.Url)
+	return nil
+}
+
 func handlerListAllFeeds(s *state, cmd command) error {
 	ctx := context.Background()
 	allFeeds, err := s.db.ListAllFeeds(ctx)
@@ -70,7 +85,7 @@ func handlerListAllFeeds(s *state, cmd command) error {
 	}
 
 	for _, feed := range allFeeds {
-		printFeed(feed)
+		displayFeed(feed)
 	}
 	return nil
 }

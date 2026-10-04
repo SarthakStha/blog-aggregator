@@ -35,6 +35,7 @@ func initializeRegistry() *commands {
 	registry.register("users", handlerListUsers)
 	registry.register("agg", handlerAggregation)
 	registry.register("addfeed", middlewareLoggedIn(handlerAddFeed))
+	registry.register("removefeed", middlewareLoggedIn(handlerRemoveFeed))
 	registry.register("feeds", handlerListAllFeeds)
 	registry.register("follow", middlewareLoggedIn(handlerFollow))
 	registry.register("unfollow", middlewareLoggedIn(handlerUnfollow))
