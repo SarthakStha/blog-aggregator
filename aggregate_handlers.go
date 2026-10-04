@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/SarthakStha/blog-aggregator/internal/feed"
+	"github.com/SarthakStha/gator/internal/feed"
 	"time"
 )
 

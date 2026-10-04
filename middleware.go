@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"github.com/SarthakStha/blog-aggregator/internal/database"
+	"github.com/SarthakStha/gator/internal/database"
 	"log"
 )
 

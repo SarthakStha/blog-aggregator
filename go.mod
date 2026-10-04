@@ -1,4 +1,4 @@
-module github.com/SarthakStha/blog-aggregator
+module github.com/SarthakStha/gator
 
 go 1.27.0
 

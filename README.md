@@ -52,7 +52,7 @@ goose <database connection string> down
 ### 5. Install gator
 Run the following command. This should compile and install the `gator` command into your bin folder.
 ```
-go install github.com/SarthakStha/blog-aggregator
+go install github.com/SarthakStha/gator
 ```
 
 ## List of Commands

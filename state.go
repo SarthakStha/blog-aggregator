@@ -2,8 +2,8 @@ package main
 
 import (
 	"database/sql"
-	"github.com/SarthakStha/blog-aggregator/internal/config"
-	"github.com/SarthakStha/blog-aggregator/internal/database"
+	"github.com/SarthakStha/gator/internal/config"
+	"github.com/SarthakStha/gator/internal/database"
 )
 
 type state struct {
